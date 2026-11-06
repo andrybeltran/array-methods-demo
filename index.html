@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2e8">
+  <title>Array Lab | JavaScript Methods</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f2e8;
+      --ink: #1d2925;
+      --muted: #59645d;
+      --line: #c8cabe;
+      --green: #b6e35d;
+      --red: #ef654b;
+      --blue: #395ce7;
+      --white: #fffef9;
+      --mono: "Courier New", monospace;
+      --display: Georgia, "Times New Roman", serif;
+      --body: "Trebuchet MS", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image: radial-gradient(#c8cabe 0.65px, transparent 0.65px);
+      background-size: 15px 15px;
+      font-family: var(--body);
+      line-height: 1.5;
+    }
+    button { font: inherit; }
+    .page { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .wordmark { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 13px; font-weight: 700; }
+    .mark { display: grid; width: 28px; height: 28px; place-items: center; background: var(--green); border: 1px solid var(--ink); font-size: 17px; }
+    .top-note { color: var(--muted); font-family: var(--mono); font-size: 11px; text-transform: uppercase; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 36px; align-items: end; padding: 54px 0 42px; }
+    .eyebrow { margin: 0 0 12px; color: var(--blue); font-family: var(--mono); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    h1 { max-width: 700px; margin: 0; font-family: var(--display); font-size: clamp(42px, 6vw, 68px); font-weight: 500; line-height: 0.98; }
+    .hero-copy { max-width: 560px; margin: 18px 0 0; color: var(--muted); font-size: 16px; }
+    .hero-stamp { padding: 18px; border: 1px solid var(--ink); background: var(--red); box-shadow: 5px 5px 0 var(--ink); transform: rotate(2deg); }
+    .hero-stamp span { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; }
+    .hero-stamp strong { display: block; margin-top: 5px; font-family: var(--display); font-size: 26px; font-weight: 500; line-height: 1.05; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
+    .legend-item { display: inline-flex; gap: 8px; align-items: center; }
+    .dot { width: 11px; height: 11px; border: 1px solid var(--ink); }
+    .dot.mutator { background: var(--red); }
+    .dot.accessor { background: var(--blue); }
+    .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; padding: 30px 0 48px; }
+    .method-group { min-width: 0; }
+    .group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    h2 { margin: 0; font-family: var(--display); font-size: 29px; font-weight: 500; }
+    .group-label { color: var(--muted); font-family: var(--mono); font-size: 11px; text-transform: uppercase; }
+    .method { margin-bottom: 14px; padding: 18px; border: 1px solid var(--ink); background: var(--white); }
+    .method-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    h3 { margin: 0; font-family: var(--mono); font-size: 15px; }
+    .method-index { color: var(--muted); font-family: var(--mono); font-size: 11px; }
+    .explain { margin: 7px 0 12px; color: var(--muted); font-size: 13px; }
+    .array-label { margin: 12px 0 5px; color: var(--muted); font-family: var(--mono); font-size: 10px; text-transform: uppercase; }
+    .array { display: flex; min-height: 34px; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .array li { padding: 5px 8px; border: 1px solid var(--line); background: #f1f0e8; font-family: var(--mono); font-size: 12px; }
+    .array.result li { border-color: var(--blue); background: #e9edff; }
+    .array.changed li { border-color: #c34a36; background: #fff0ec; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; }
+    .action { min-height: 36px; padding: 7px 11px; border: 1px solid var(--ink); color: var(--ink); background: var(--green); cursor: pointer; font-family: var(--mono); font-size: 11px; font-weight: 700; }
+    .action:hover { color: white; background: var(--ink); }
+    .action:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    .action.secondary { background: transparent; }
+    .code-note { margin: 12px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); color: var(--muted); font-family: var(--mono); font-size: 11px; overflow-wrap: anywhere; }
+    .status { min-height: 20px; margin: 9px 0 0; color: var(--blue); font-family: var(--mono); font-size: 11px; }
+    footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 16px 0 24px; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--mono); font-size: 11px; }
+    footer a { color: var(--ink); }
+    @media (max-width: 700px) {
+      .page { width: min(100% - 28px, 520px); }
+      .hero { grid-template-columns: 1fr; gap: 22px; padding-top: 38px; }
+      .hero-stamp { width: fit-content; max-width: 220px; }
+      .columns { grid-template-columns: 1fr; gap: 24px; padding-top: 24px; }
+      .top-note { max-width: 130px; text-align: right; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="wordmark"><span class="mark" aria-hidden="true">[ ]</span> ARRAY LAB</div>
+      <div class="top-note">A tiny JavaScript field guide</div>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">JavaScript / Arrays / 01</p>
+          <h1 id="page-title">Change the array.<br>Keep the original.</h1>
+          <p class="hero-copy">Some array methods rewrite the list in place. Others hand back a fresh array and leave the source alone. Try each one and watch the difference.</p>
+        </div>
+        <div class="hero-stamp"><span>Today’s lesson</span><strong>Mutate or<br>make a copy?</strong></div>
+      </section>
+      <div class="legend" aria-label="Method key">
+        <span class="legend-item"><span class="dot mutator" aria-hidden="true"></span>Mutator: changes the original</span>
+        <span class="legend-item"><span class="dot accessor" aria-hidden="true"></span>Accessor: returns a new array</span>
+      </div>
+      <section class="columns" aria-label="Interactive array method examples">
+        <section class="method-group" aria-labelledby="mutator-heading">
+          <div class="group-head"><h2 id="mutator-heading">Mutators</h2><span class="group-label">Original changes</span></div>
+          <article class="method">
+            <div class="method-top"><h3>push()</h3><span class="method-index">01 / MUTATOR</span></div>
+            <p class="explain">Adds an item to the end of the same array.</p>
+            <p class="array-label">fruitArray · original</p>
+            <ul class="array changed" id="fruit-array" aria-live="polite"></ul>
+            <div class="controls"><button class="action" id="push-button" type="button">Run push('fig')</button></div>
+            <p class="code-note">fruitArray.push("fig")</p>
+            <p class="status" id="push-status" aria-live="polite"></p>
+          </article>
+          <article class="method">
+            <div class="method-top"><h3>splice()</h3><span class="method-index">02 / MUTATOR</span></div>
+            <p class="explain">Removes an item at an index, in place.</p>
+            <p class="array-label">subjectArray · original</p>
+            <ul class="array changed" id="subject-array" aria-live="polite"></ul>
+            <div class="controls"><button class="action" id="splice-button" type="button">Run splice(1, 1)</button></div>
+            <p class="code-note">subjectArray.splice(1, 1)</p>
+            <p class="status" id="splice-status" aria-live="polite"></p>
+          </article>
+          <button class="action secondary" id="reset-button" type="button">Reset mutator examples</button>
+        </section>
+        <section class="method-group" aria-labelledby="accessor-heading">
+          <div class="group-head"><h2 id="accessor-heading">Accessors</h2><span class="group-label">Source stays put</span></div>
+          <article class="method">
+            <div class="method-top"><h3>slice()</h3><span class="method-index">03 / ACCESSOR</span></div>
+            <p class="explain">Copies a selected range into a new array.</p>
+            <p class="array-label">originalColors · source</p>
+            <ul class="array" id="color-source"></ul>
+            <p class="array-label">slicedColors · new array</p>
+            <ul class="array result" id="color-result" aria-live="polite"></ul>
+            <p class="code-note">const slicedColors = originalColors.slice(1, 4)</p>
+          </article>
+          <article class="method">
+            <div class="method-top"><h3>concat()</h3><span class="method-index">04 / ACCESSOR</span></div>
+            <p class="explain">Combines arrays into a new array.</p>
+            <p class="array-label">baseTools · source</p>
+            <ul class="array" id="tools-source"></ul>
+            <p class="array-label">allTools · new array</p>
+            <ul class="array result" id="tools-result" aria-live="polite"></ul>
+            <p class="code-note">const allTools = baseTools.concat(["Git"])</p>
+          </article>
+        </section>
+      </section>
+    </main>
+    <footer><span>ARRAY LAB · Learn by changing one thing at a time.</span><a href="https://github.com/andrybeltran/array-methods-demo">View source on GitHub</a></footer>
+  </div>
+  <script>
+    const startingFruit = ["Apricot", "Pear", "Plum"];
+    const startingSubjects = ["Design", "History", "Biology"];
+    let fruitArray = [...startingFruit];
+    let subjectArray = [...startingSubjects];
+    const originalColors = ["Coral", "Cobalt", "Citrus", "Mint", "Plum"];
+    const slicedColors = originalColors.slice(1, 4);
+    const baseTools = ["HTML", "CSS", "JavaScript"];
+    const allTools = baseTools.concat(["Git"]);
+
+    function showArray(elementId, values) {
+      const list = document.getElementById(elementId);
+      list.replaceChildren(...values.map((value) => {
+        const item = document.createElement("li");
+        item.textContent = value;
+        return item;
+      }));
+    }
+
+    function render() {
+      showArray("fruit-array", fruitArray);
+      showArray("subject-array", subjectArray);
+      showArray("color-source", originalColors);
+      showArray("color-result", slicedColors);
+      showArray("tools-source", baseTools);
+      showArray("tools-result", allTools);
+    }
+
+    document.getElementById("push-button").addEventListener("click", () => {
+      fruitArray.push("Fig");
+      render();
+      document.getElementById("push-status").textContent = "Fig added. fruitArray itself changed.";
+    });
+    document.getElementById("splice-button").addEventListener("click", () => {
+      const removed = subjectArray.splice(1, 1);
+      render();
+      document.getElementById("splice-status").textContent = removed.length ? `${removed[0]} removed. subjectArray itself changed.` : "No item at index 1 to remove. Reset to try again.";
+    });
+    document.getElementById("reset-button").addEventListener("click", () => {
+      fruitArray = [...startingFruit];
+      subjectArray = [...startingSubjects];
+      document.getElementById("push-status").textContent = "";
+      document.getElementById("splice-status").textContent = "";
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
